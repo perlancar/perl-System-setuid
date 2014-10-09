@@ -1,4 +1,4 @@
-package System::setuid;
+package Unix::setuid;
 
 # DATE
 # VERSION
@@ -12,27 +12,27 @@ use POSIX qw();
 use Exporter qw(import);
 our @EXPORT = qw($RUID $EUID $RUSER $EUSER);
 
-our $RUID ; tie $RUID , 'System::setuid::ruid'  or die "Can't tie \$RUID";
-our $EUID ; tie $EUID , 'System::setuid::euid'  or die "Can't tie \$EUID";
-our $RUSER; tie $RUSER, 'System::setuid::ruser' or die "Can't tie \$RUSER";
-our $EUSER; tie $EUSER, 'System::setuid::euser' or die "Can't tie \$EUSER";
+our $RUID ; tie $RUID , 'Unix::setuid::ruid'  or die "Can't tie \$RUID";
+our $EUID ; tie $EUID , 'Unix::setuid::euid'  or die "Can't tie \$EUID";
+our $RUSER; tie $RUSER, 'Unix::setuid::ruser' or die "Can't tie \$RUSER";
+our $EUSER; tie $EUSER, 'Unix::setuid::euser' or die "Can't tie \$EUSER";
 
 {
-    package System::setuid::ruid;
+    package Unix::setuid::ruid;
     sub TIESCALAR { bless [], $_[0] }
     sub FETCH     { $< }
     sub STORE     { $< = $_[1] }
 }
 
 {
-    package System::setuid::euid;
+    package Unix::setuid::euid;
     sub TIESCALAR { bless [], $_[0] }
     sub FETCH     { $> }
     sub STORE     { $> = $_[1] }
 }
 
 {
-    package System::setuid::ruser;
+    package Unix::setuid::ruser;
     sub TIESCALAR { bless [], $_[0] }
     sub FETCH     { my @pw = getpwuid($<); @pw ? $pw[0] : $< }
     sub STORE     {
@@ -47,7 +47,7 @@ our $EUSER; tie $EUSER, 'System::setuid::euser' or die "Can't tie \$EUSER";
 }
 
 {
-    package System::setuid::euser;
+    package Unix::setuid::euser;
     sub TIESCALAR { bless [], $_[0] }
     sub FETCH     { my @pw = getpwuid($>); @pw ? $pw[0] : $> }
     sub STORE     {
@@ -66,7 +66,7 @@ our $EUSER; tie $EUSER, 'System::setuid::euser' or die "Can't tie \$EUSER";
 
 =head1 SYNOPSIS
 
- use System::setuid; # exports $RUID, $EUID, $RUSER, $EUSER
+ use Unix::setuid; # exports $RUID, $EUID, $RUSER, $EUSER
  say "Real      UID : $RUID";
  say "Effective UID : $EUID";
  say "Real username : $RUSER";
